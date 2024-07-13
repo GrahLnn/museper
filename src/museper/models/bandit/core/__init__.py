@@ -22,11 +22,11 @@ from torch import nn, optim
 from torch.optim import lr_scheduler
 from torch.optim.lr_scheduler import LRScheduler
 
-from models.bandit.core import loss, metrics as metrics_, model
-from models.bandit.core.data._types import BatchedDataDict
-from models.bandit.core.data.augmentation import BaseAugmentor, StemAugmentor
-from models.bandit.core.utils import audio as audio_
-from models.bandit.core.utils.audio import BaseFader
+from ..core import loss, metrics as metrics_, model
+from .data._types import BatchedDataDict
+from .data.augmentation import BaseAugmentor, StemAugmentor
+from .utils import audio as audio_
+from .utils.audio import BaseFader
 
 # from pandas.io.json._normalize import nested_to_record
 
