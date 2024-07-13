@@ -1,0 +1,28 @@
+[project]
+name = "museper"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "GrahLnn", email = "grahlnn@skiff.com"},
+]
+dependencies = [
+    "torch>=2.3.1",
+    "numpy>=2.0.0",
+    "ml-collections>=0.1.1",
+    "librosa>=0.10.2.post1",
+    "soundfile>=0.12.1",
+    "omegaconf>=2.3.0",
+    "segmentation-models-pytorch>=0.3.3",
+    "torchseg>=0.0.1a1",
+    "transformers>=4.41.2",
+    "demucs>=4.0.1",
+    "beartype>=0.18.5",
+    "rotary-embedding-torch>=0.6.4",
+]
+requires-python = "==3.11.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
