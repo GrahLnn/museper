@@ -3,7 +3,7 @@ import torch
 import numpy as np
 import soundfile as sf
 import librosa
-from utils import demix_track, demix_track_demucs, get_model_from_config
+from .utils import demix_track, demix_track_demucs, get_model_from_config
 
 
 def separate_audio(
