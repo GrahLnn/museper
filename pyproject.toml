@@ -11,7 +11,6 @@ dependencies = [
     "ml-collections>=0.1.1",
     "librosa>=0.10.2.post1",
     "soundfile>=0.12.1",
-    "omegaconf>=2.3.0",
     "segmentation-models-pytorch>=0.3.3",
     "torchseg>=0.0.1a1",
     "transformers>=4.41.2",
