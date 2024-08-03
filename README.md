@@ -5,13 +5,42 @@ Used in the form of a library. Code from [ZFTurbo/Music-Source-Separation-Traini
 ## Install
 
 ```shell
+# If you are not using the uv package manager, you can simply copy the command that starts with pip.
+# install pytorch
+uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# install museper
 uv pip install https://github.com/GrahLnn/museper.git
 ```
 
-## useage
+## Useage
 
 ```python
+from pathlib import Path
+
+import httpx
+from alive_progress import alive_bar
 from museper.inference import separate_audio
+
+
+def download_file(url: str, save_path: Path):
+    """
+    从指定的 URL 下载文件并保存到指定路径，显示进度条。
+
+    :param url: 要下载的文件的 URL
+    :param save_path: 保存下载文件的路径
+    """
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with httpx.stream("GET", url, follow_redirects=True) as response:
+        response.raise_for_status()
+        total_size = int(response.headers.get("content-length", 0))
+
+        with open(save_path, "wb") as file:
+            with alive_bar(total_size, title=f"Downloading {save_path.name}") as bar:
+                for chunk in response.iter_bytes(chunk_size=8192):
+                    size = file.write(chunk)
+                    bar(size)
 
 def check_model_exist() -> tuple[Path, Path]:
     """
