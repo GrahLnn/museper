@@ -31,6 +31,8 @@ def download_file(url: str, save_path: Path):
     :param save_path: 保存下载文件的路径
     """
     save_path.parent.mkdir(parents=True, exist_ok=True)
+    if save_path.exists():
+        return str(save_path)
 
     with httpx.stream("GET", url, follow_redirects=True) as response:
         response.raise_for_status()
@@ -42,34 +44,68 @@ def download_file(url: str, save_path: Path):
                     size = file.write(chunk)
                     bar(size)
 
-def check_model_exist() -> tuple[Path, Path]:
+
+def check_model_exist(model_type: str) -> tuple[Path, Path]:
     """
-    检查模型文件是否存在，如果不存在则下载。
+    检查模型文件是否存在，如果不存在则下载。验证文件完整性。
 
     :return: 本地模型权重文件路径和配置文件路径
     """
-    weight_name = "model_bs_roformer_ep_317_sdr_12.9755.ckpt"
-    config_name = "model_bs_roformer_ep_317_sdr_12.9755.yaml"
+    match model_type:
+        case "bs_roformer":
+            weight_url = "https://github.com/TRvlvr/model_repo/releases/download/all_public_uvr_models/model_bs_roformer_ep_317_sdr_12.9755.ckpt"
+            weight_sha256 = (
+                "5B84F37E8D444C8CB30C79D77F613A41C05868FF9C9AC6C7049C00AEFAE115AA"
+            )
+            config_url = "https://raw.githubusercontent.com/ZFTurbo/Music-Source-Separation-Training/main/configs/viperx/model_bs_roformer_ep_317_sdr_12.9755.yaml"
+        case "mel_band_roformer":
+            weight_url = "https://huggingface.co/KimberleyJSN/melbandroformer/resolve/main/MelBandRoformer.ckpt"
+            weight_sha256 = (
+                "87201F4D31AFB5BC79993230FC49446918425574DB48C01C405E44F365C7559E"
+            )
+            config_url = "https://raw.githubusercontent.com/ZFTurbo/Music-Source-Separation-Training/main/configs/KimberleyJensen/config_vocals_mel_band_roformer_kj.yaml"
 
-    weight_url = (
-        "https://github.com/TRvlvr/model_repo/releases/download/all_public_uvr_models/"
-        + weight_name
-    )
-    config_url = (
-        "https://raw.githubusercontent.com/ZFTurbo/Music-Source-Separation-Training/main/configs/viperx/"
-        + config_name
-    )
+        case _:
+            raise ValueError(f"Invalid model type: {model_type}")
 
-    # 使用用户主目录下的缓存目录
-    cache_dir = Path.home() / ".cache" / "delta_context2" / "bs_roformer"
-    local_weight_path = cache_dir / weight_name
-    local_config_path = cache_dir / config_name
+    cache_dir = Path.home() / ".cache" / "delta_context2" / model_type
+    local_weight_path = cache_dir / weight_url.split("/")[-1]
+    local_config_path = cache_dir / config_url.split("/")[-1]
 
-    if not cache_dir.exists():
-        download_file(weight_url, local_weight_path)
-        download_file(config_url, local_config_path)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+
+    download_and_verify(weight_url, local_weight_path, weight_sha256)
+    download_file(config_url, local_config_path)
 
     return local_weight_path, local_config_path
+
+
+def download_and_verify(url: str, save_path: Path, expected_sha256: str):
+    """
+    下载文件并验证其SHA256哈希值。如果哈希值不匹配，尝试恢复下载。
+
+    :param url: 要下载的文件的URL
+    :param save_path: 保存下载文件的路径
+    :param expected_sha256: 预期的SHA256哈希值
+    """
+    download_file(url, save_path)
+
+    if not verify_file(save_path, expected_sha256):
+        print(f"model {save_path} hash not match, try to download again...")
+        os.remove(save_path)
+        download_file(url, save_path)
+
+        if not verify_file(save_path, expected_sha256):
+            raise ValueError(f"downloaded model {save_path} hash not match")
+
+
+def verify_file(file_path: Path, expected_sha256: str) -> bool:
+    sha256_hash = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
+    return sha256_hash.hexdigest().lower() == expected_sha256.lower()
+
 
 def extract_vocal(audio_path: str) -> str:
     weight, config = check_model_exist()
@@ -88,6 +124,7 @@ def extract_vocal(audio_path: str) -> str:
             store_dir=None,
             device_id=0,
             extract_instrumental=False,
+            model_type="bs_roformer", # or mel_band_roformer
         )
 
     shutil.move(model_give_name, target_audio_path)
