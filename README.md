@@ -10,7 +10,7 @@ Used in the form of a library. Code from [ZFTurbo/Music-Source-Separation-Traini
 uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
 # install museper
-uv pip install https://github.com/GrahLnn/museper.git
+uv pip install git+https://github.com/GrahLnn/museper.git
 ```
 
 ## Useage
