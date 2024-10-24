@@ -7,7 +7,7 @@ from beartype.typing import Callable, List, Optional, Tuple
 from einops import pack, rearrange, reduce, repeat, unpack
 from einops.layers.torch import Rearrange
 from librosa import filters
-from models.bs_roformer.attend import Attend
+from .attend import Attend
 from rotary_embedding_torch import RotaryEmbedding
 from torch import Tensor, einsum, nn
 from torch.nn import Module, ModuleList
