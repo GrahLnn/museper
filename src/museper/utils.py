@@ -6,13 +6,24 @@ import torch
 import torch.nn as nn
 import yaml
 from ml_collections import ConfigDict
-from .models.bs_roformer import BSRoformer
 
 
-def get_model_from_config(config_path):
+def get_model_from_config(model_type, config_path):
     with open(config_path) as f:
         config = ConfigDict(yaml.load(f, Loader=yaml.FullLoader))
-    model = BSRoformer(**dict(config.model))
+
+    match model_type:
+        case "bs_roformer":
+            from .models.bs_roformer import BSRoformer
+
+            model = BSRoformer(**dict(config.model))
+        case "mel_band_roformer":
+            from .models.bs_roformer import MelBandRoformer
+
+            model = MelBandRoformer(**dict(config.model))
+        case _:
+            raise ValueError(f"Unsupported model type: {model_type}")
+
     return model, config
 
 

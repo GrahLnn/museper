@@ -38,20 +38,14 @@ def check_model_exist(model_dir: Path) -> tuple[Path, Path]:
 
     :param model_dir: 模型文件的目录
     """
-    weight_name = "model_bs_roformer_ep_317_sdr_12.9755.ckpt"
-    config_name = "model_bs_roformer_ep_317_sdr_12.9755.yaml"
 
-    weight_url = (
-        "https://github.com/TRvlvr/model_repo/releases/download/all_public_uvr_models/"
-        + weight_name
-    )
-    config_url = (
-        "https://raw.githubusercontent.com/ZFTurbo/Music-Source-Separation-Training/main/configs/viperx/"
-        + config_name
-    )
+    # https://huggingface.co/KimberleyJSN/melbandroformer/resolve/main/MelBandRoformer.ckpt
+    weight_url = "https://github.com/TRvlvr/model_repo/releases/download/all_public_uvr_models/model_bs_roformer_ep_317_sdr_12.9755.ckpt"
+    # https://raw.githubusercontent.com/ZFTurbo/Music-Source-Separation-Training/main/configs/KimberleyJensen/config_vocals_mel_band_roformer_kj.yaml
+    config_url = "https://raw.githubusercontent.com/ZFTurbo/Music-Source-Separation-Training/main/configs/viperx/model_bs_roformer_ep_317_sdr_12.9755.yaml"
 
-    local_weight_path = model_dir / "bs_roformer" / weight_name
-    local_config_path = model_dir / "bs_roformer" / config_name
+    local_weight_path = model_dir / "bs_roformer" / weight_url.split("/")[-1]
+    local_config_path = model_dir / "bs_roformer" / config_url.split("/")[-1]
 
     if not os.path.exists(model_dir / "bs_roformer"):
         download_file(weight_url, local_weight_path)

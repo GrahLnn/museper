@@ -13,6 +13,7 @@ def separate_audio(
     store_dir: str = None,
     device_id: int = 0,
     extract_instrumental: bool = False,
+    model_type: str = "bs_roformer",
 ):
     """
     从单个音频文件中分离出不同的音轨。
@@ -31,7 +32,7 @@ def separate_audio(
         store_dir = os.path.dirname(input_file)
 
     # 加载模型和配置
-    model, config = get_model_from_config(config_path)
+    model, config = get_model_from_config(model_type, config_path)
     if check_point:
         state_dict = torch.load(check_point)
         model.load_state_dict(state_dict)
