@@ -1,14 +1,15 @@
 import os
-import torch
+
+import librosa
 import numpy as np
 import soundfile as sf
-import librosa
+import torch
+
+from .download_model import check_model_exist
 from .utils import demix_track, get_model_from_config
 
 
 def separate_audio(
-    config_path: str,
-    check_point: str,
     input_file: str,
     store_dir: str = None,
     device_id: int = 0,
@@ -30,6 +31,8 @@ def separate_audio(
     # 设置存储目录
     if store_dir is None:
         store_dir = os.path.dirname(input_file)
+
+    check_point, config_path = check_model_exist(model_type)
 
     # 加载模型和配置
     model, config = get_model_from_config(model_type, config_path)
