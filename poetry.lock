@@ -1290,6 +1290,21 @@ files = [
 six = ">=1.7.0"
 
 [[package]]
+name = "rotary-embedding-torch"
+version = "0.8.4"
+description = "Rotary Embedding - Pytorch"
+optional = false
+python-versions = "*"
+files = [
+    {file = "rotary_embedding_torch-0.8.4-py3-none-any.whl", hash = "sha256:8cf9e709fc0768b8da89f86314cdbe57a816d018a02bf29f2ea8e26bf1a54a34"},
+    {file = "rotary_embedding_torch-0.8.4.tar.gz", hash = "sha256:0c608f180d27619dd7647276de981959586fccd45cbfd6d2ed2f0174d897c658"},
+]
+
+[package.dependencies]
+einops = ">=0.7"
+torch = ">=2.0"
+
+[[package]]
 name = "scikit-learn"
 version = "1.5.2"
 description = "A set of python modules for machine learning and data mining"
@@ -1693,4 +1708,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "6df6e08bb13f86474e661714f3c5afa1a17042d6f936964dbe42690ea5d0014a"
+content-hash = "aee096d49f568c12ca1726ea9d84b46ba65cac9607fd622a3f3f266f024aa5cc"
